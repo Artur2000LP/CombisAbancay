@@ -1,0 +1,455 @@
+
+<?php
+$conexion = new mysqli("localhost", "root", "", "bdcombi");
+
+if ($conexion->connect_error) {
+    die("Conexión fallida: " . $conexion->connect_error);
+}
+
+?> 
+
+
+CREATE TABLE rutas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_ruta VARCHAR(50), -- Campo para almacenar el nombre de la ruta
+    coordenadas TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+****
+
+conexion:
+<!-- <?php
+$conexion = new mysqli("localhost", "root", "", "bdcombi");
+$conexion->set_charset("utf8");
+date_default_timezone_set("America/Lima");
+
+
+if ($conexion->connect_error) {
+    die("Conexión fallida: " . $conexion->connect_error);
+}
+
+?> -->
+
+host 
+
+<?php
+$servername = "localhost"; 
+$username = "id22008570_artur"; 
+$password = "Artur#2000"; 
+$database = "id22008570_artur"; 
+
+
+$conexion = new mysqli($servername, $username, $password, $database);
+
+
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+} else {
+    echo "Conexión exitosa";
+}
+?>
+
+
+
+vistaUsuario.js
+
+// var map;
+
+// function openMap(lineNumber) {
+//     var frameContainer = document.getElementById('content');
+//     var htmlContent = '';
+
+//     // Contenido HTML para la información de la ruta y los botones
+//     htmlContent += `<div class="contHeder contHeder${lineNumber}A">`;
+//     htmlContent += `<h2 class="Title_i Title_i${lineNumber}A">Línea ${lineNumber}</h2>`;
+//     htmlContent += `<h3 class="parafo parafo${lineNumber}A">Unidades Disponibles</h3>`;
+//     htmlContent += `<button id="ruta${lineNumber}A" class="button_ruta button_ruta${lineNumber}A" onclick="mostrarRutaMapbox(${lineNumber})"> ver ruta ${lineNumber}</button>`;
+//     htmlContent += `</div>`;
+//     htmlContent += `<div id="radioButtons" class="cont_radioButtons cont_radioButtons${lineNumber}A">`;
+//     // Generar botones de radio para las unidades
+//     for (var i = 1; i <= 8; i++) {
+//         htmlContent += `<input type="radio" id="radio${lineNumber}${i}A" class="itemRadio itemRadio${lineNumber}${i}A" name="unidad" value="unidad${lineNumber}${i}">
+//                         <label for="radio${lineNumber}${i}A">Unidad ${lineNumber}${i}</label><br>`;
+//     }
+//     htmlContent += `</div>`;
+//     htmlContent += `<div id="map" class="div_Map div_Map${lineNumber}A" style="position: relative;"></div>`;
+//     // Controles para el tipo de mapa
+//     htmlContent += `<div class="map-controls map-controls${lineNumber}A">`;
+//     htmlContent += `<input type="radio" name="map-type" id="satellite${lineNumber}" value="satellite">`;
+//     htmlContent += `<label for="satellite${lineNumber}">Satélite</label>`;
+//     htmlContent += `<input type="radio" name="map-type" id="terrain${lineNumber}" value="terrain">`;
+//     htmlContent += `<label for="terrain${lineNumber}">Relieve</label>`;
+//     htmlContent += `</div>`;
+//     frameContainer.innerHTML = htmlContent;
+//     initMap(lineNumber);
+// }
+
+// function mostrarRutaMapbox(lineNumber) {
+//     var divMap = document.getElementById(`map`);
+//     if (!divMap) {
+//         console.error(`Elemento divMap no encontrado.`);
+//         return;
+//     }
+
+//     // Limpiar el contenido existente del contenedor del mapa
+//     divMap.innerHTML = '';
+
+//     // Crear un nuevo div para el mapa y la ruta
+//     var mapContainer = document.createElement('div');
+//     mapContainer.className = 'map-container';
+//     mapContainer.id = `mapRuta${lineNumber}`;
+
+//     // Agregar el nuevo div al contenedor del mapa
+//     divMap.appendChild(mapContainer);
+
+//     // Obtener la ruta correspondiente del almacenamiento local
+//     const ruta = JSON.parse(localStorage.getItem(`ruta${lineNumber}`));
+
+//     // Verificar si se encontró la ruta en el almacenamiento local
+//     if (!ruta) {
+//         console.error(`No se encontró la ruta ${lineNumber} en el almacenamiento local.`);
+//         return;
+//     }
+
+//     // Inicializar el mapa de Mapbox
+//     mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ0dXIyMDAwbHAiLCJhIjoiY2x1anl6MXM0MGxoeTJ2bzFmODVlOGZ0MSJ9._K2GYzR2Obyc1Yi4yxQ81g';
+
+//     const center = [ruta[0][0], ruta[0][1]]; // Centro del mapa en las coordenadas del primer punto de la ruta
+
+//     const map = new mapboxgl.Map({
+//         container: mapContainer,
+//         style: 'mapbox://styles/mapbox/streets-v12', // Estilo de mapa deseado
+//         center: center,
+//         zoom: 14 // Nivel de zoom deseado
+//     });
+
+//     // Añadir marcador de inicio
+//     new mapboxgl.Marker()
+//         .setLngLat([ruta[0][0], ruta[0][1]])
+//         .setPopup(new mapboxgl.Popup().setHTML('<h3>Inicio</h3>'))
+//         .addTo(map);
+
+//     // Añadir marcador de fin
+//     new mapboxgl.Marker()
+//         .setLngLat([ruta[ruta.length - 1][0], ruta[ruta.length - 1][1]])
+//         .setPopup(new mapboxgl.Popup().setHTML('<h3>Fin</h3>'))
+//         .addTo(map);
+
+//     // Añadir la capa de la ruta al mapa
+//     map.on('load', function () {
+//         map.addLayer({
+//             'id': `route${lineNumber}`,
+//             'type': 'line',
+//             'source': {
+//                 'type': 'geojson',
+//                 'data': {
+//                     'type': 'Feature',
+//                     'properties': {},
+//                     'geometry': {
+//                         'type': 'LineString',
+//                         'coordinates': ruta
+//                     }
+//                 }
+//             },
+//             'layout': {
+//                 'line-join': 'round',
+//                 'line-cap': 'round'
+//             },
+//             'paint': {
+//                 'line-color': '#00D149',
+//                 'line-width': 5
+//             }
+//         });
+
+//         // Eliminar la clase 'mapboxgl-map' del contenedor del mapa
+//         mapContainer.classList.remove('mapboxgl-map');
+//     });
+
+//     // Escuchar cambios en el tipo de mapa seleccionado
+//     document.querySelectorAll(`input[name="map-type"]`).forEach(function (input) {
+//         input.addEventListener('change', function () {
+//             var mapType = this.value;
+//             const mapId = this.closest('.div_Map').id.replace('mapRuta', '');
+//             var mapInstance = document.getElementById(`mapRuta${mapId}`);
+//             var mapObj = mapInstance.mapboxMap;
+//             if (mapType === 'satellite') {
+//                 mapObj.setStyle('mapbox://styles/mapbox/satellite-v9');
+//             } else if (mapType === 'terrain') {
+//                 mapObj.setStyle('mapbox://styles/mapbox/outdoors-v11');
+//             }
+//         });
+//     });
+// }
+
+// function initMap(lineNumber) {
+//     var myLatLng = { lat: -13.6175533, lng: -72.8681635 };
+
+//     map = new google.maps.Map(document.getElementById(`map`), {
+//         center: myLatLng,
+//         zoom: 15,
+//         mapTypeId: 'roadmap'
+//     });
+
+//     var marker = new google.maps.Marker({
+//         position: myLatLng,
+//         map: map,
+//         title: 'Universidad Nacional Micaela Bastidas de Apurímac'
+//     });
+
+//     // Escuchar cambios en el tipo de mapa seleccionado
+//     document.querySelectorAll(`input[name="map-type"]`).forEach(function (input) {
+//         input.addEventListener('change', function () {
+//             var mapType = this.value;
+//             if (mapType === 'satellite') {
+//                 map.setMapTypeId('satellite');
+//             } else if (mapType === 'terrain') {
+//                 map.setMapTypeId('terrain');
+//             }
+//         });
+//     });
+// }
+
+// openMap(1);
+
+
+///  conecion 
+<?php
+// Incluir el archivo de conexión
+include 'conexion.php';
+
+// Obtener datos enviados desde el frontend
+$data = json_decode(file_get_contents("php://input"));
+
+// Verificar si se proporcionó un ID para actualizar la ruta
+if (isset($data->id)) {
+    // Actualizar la ruta
+    $id = $data->id;
+    $coordenadas = json_encode($data->coordenadas); // Convertir a JSON
+    $sql = "UPDATE rutas SET coordenadas='$coordenadas' WHERE id=$id";
+
+    if ($conexion->query($sql) === TRUE) {
+        echo json_encode(["success" => true, "message" => "La ruta ha sido actualizada correctamente."]);
+    } else {
+        echo json_encode(["success" => false, "error" => "Error al actualizar la ruta: " . $conexion->error]);
+    }
+} else {
+    // Insertar una nueva ruta
+    $coordenadas = json_encode($data->coordenadas); // Convertir a JSON
+    $sql = "INSERT INTO rutas (coordenadas) VALUES ('$coordenadas')";
+
+    if ($conexion->query($sql) === TRUE) {
+        echo json_encode(["success" => true, "message" => "La ruta ha sido guardada correctamente."]);
+    } else {
+        echo json_encode(["success" => false, "error" => "Error al guardar la ruta: " . $conexion->error]);
+    }
+}
+
+// Cerrar la conexión
+$conexion->close();
+?>
+
+//////////////////////// guardarruta :::::::::::::::::::::::
+
+<?php
+// Incluir el archivo de conexión
+include 'conexion.php';
+
+// Obtener datos enviados desde el frontend
+$data = json_decode(file_get_contents("php://input"));
+
+try {
+    // Verificar si se proporcionó un ID para actualizar la ruta
+    if (isset($data->id)) {
+        // Actualizar la ruta
+        $id = $conexion->real_escape_string($data->id);
+        $coordenadas = $conexion->real_escape_string($data->coordenadas);
+        
+        $sql = "UPDATE rutas SET coordenadas='$coordenadas' WHERE id=$id";
+    } else {
+        // Insertar una nueva ruta
+        $coordenadas = $conexion->real_escape_string($data->coordenadas);
+
+        $sql = "INSERT INTO rutas (coordenadas) VALUES ('$coordenadas')";
+    }
+
+    // Ejecutar la consulta SQL
+    if ($conexion->query($sql) === TRUE) {
+        echo json_encode(["success" => true, "message" => "La ruta ha sido guardada correctamente."]);
+    } else {
+        throw new Exception("Error al ejecutar la consulta SQL: " . $conexion->error);
+    }
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
+}
+
+// Cerrar la conexión
+$conexion->close();
+?>
+
+
+;;;;;;;;;;;;;;;; usuario js::::::::::::::::
+
+
+var map;
+
+function openMap(lineNumber) {
+    var frameContainer = document.getElementById('content');
+    var htmlContent = '';
+
+    // Contenido HTML para la información de la ruta y los botones
+    htmlContent += `<div class="contHeder contHeder${lineNumber}A">`;
+    htmlContent += `<h2 class="Title_i Title_i${lineNumber}A">Línea ${lineNumber}</h2>`;
+    htmlContent += `<h3 class="parafo parafo${lineNumber}A">Unidades Disponibles</h3>`;
+    htmlContent += `<button id="ruta${lineNumber}A" class="button_ruta button_ruta${lineNumber}A" onclick="mostrarRutaMapbox(${lineNumber})"> ver ruta ${lineNumber}</button>`;
+    htmlContent += `</div>`;
+    htmlContent += `<div id="radioButtons" class="cont_radioButtons cont_radioButtons${lineNumber}A">`;
+    // Generar botones de radio para las unidades
+    for (var i = 1; i <= 8; i++) {
+        htmlContent += `<input type="radio" id="radio${lineNumber}${i}A" class="itemRadio itemRadio${lineNumber}${i}A" name="unidad" value="unidad${lineNumber}${i}">
+                        <label for="radio${lineNumber}${i}A">Unidad ${lineNumber}${i}</label><br>`;
+    }
+    htmlContent += `</div>`;
+    htmlContent += `<div id="map" class="div_Map div_Map${lineNumber}A" style="position: relative;"></div>`;
+    // Controles para el tipo de mapa
+    htmlContent += `<div class="map-controls map-controls${lineNumber}A">`;
+    htmlContent += `<input type="radio" name="map-type" id="satellite${lineNumber}" value="satellite">`;
+    htmlContent += `<label for="satellite${lineNumber}">Satélite</label>`;
+    htmlContent += `<input type="radio" name="map-type" id="terrain${lineNumber}" value="terrain">`;
+    htmlContent += `<label for="terrain${lineNumber}">Relieve</label>`;
+    htmlContent += `</div>`;
+    frameContainer.innerHTML = htmlContent;
+    initMap(lineNumber);
+}
+
+function mostrarRutaMapbox(lineNumber) {
+    var divMap = document.getElementById(`map`);
+    if (!divMap) {
+        console.error(`Elemento divMap no encontrado.`);
+        return;
+    }
+
+    // Limpiar el contenido existente del contenedor del mapa
+    divMap.innerHTML = '';
+
+    // Crear un nuevo div para el mapa y la ruta
+    var mapContainer = document.createElement('div');
+    mapContainer.className = 'map-container';
+    mapContainer.id = `mapRuta${lineNumber}`;
+
+    // Agregar el nuevo div al contenedor del mapa
+    divMap.appendChild(mapContainer);
+
+    // Obtener la ruta correspondiente del almacenamiento local
+    const ruta = JSON.parse(localStorage.getItem(`ruta${lineNumber}`));
+
+    // Verificar si se encontró la ruta en el almacenamiento local
+    if (!ruta) {
+        console.error(`No se encontró la ruta ${lineNumber} en el almacenamiento local.`);
+        return;
+    }
+
+    // Inicializar el mapa de Mapbox
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ0dXIyMDAwbHAiLCJhIjoiY2x1anl6MXM0MGxoeTJ2bzFmODVlOGZ0MSJ9._K2GYzR2Obyc1Yi4yxQ81g';
+
+    const map = new mapboxgl.Map({
+        container: mapContainer,
+        style: 'mapbox://styles/mapbox/streets-v12', // Estilo de mapa deseado
+        center: [0, 0], // Centrar en el ecuador
+        zoom: 1 // Nivel de zoom inicial para mostrar todo el planeta
+    });
+
+    // Añadir marcador de inicio
+    new mapboxgl.Marker()
+        .setLngLat([ruta[0][0], ruta[0][1]])
+        .setPopup(new mapboxgl.Popup().setHTML('<h3>Inicio</h3>'))
+        .addTo(map);
+
+    // Añadir marcador de fin
+    new mapboxgl.Marker()
+        .setLngLat([ruta[ruta.length - 1][0], ruta[ruta.length - 1][1]])
+        .setPopup(new mapboxgl.Popup().setHTML('<h3>Fin</h3>'))
+        .addTo(map);
+
+    // Añadir la capa de la ruta al mapa
+    map.on('load', function () {
+        map.addLayer({
+            'id': `route${lineNumber}`,
+            'type': 'line',
+            'source': {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': ruta
+                    }
+                }
+            },
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#00D149',
+                'line-width': 5
+            }
+        });
+
+        // Obtener los límites de la ruta
+        var bounds = ruta.reduce(function(bounds, coord) {
+            return bounds.extend(coord);
+        }, new mapboxgl.LngLatBounds(ruta[0], ruta[0]));
+
+        // Ajustar el mapa para que los límites de la ruta estén visibles
+        map.fitBounds(bounds, {
+            padding: 50, // Añadir un espacio alrededor de los límites de la ruta
+            duration: 3000 // Duración de la animación en milisegundos (3 segundos)
+        });
+    });
+
+    // Escuchar cambios en el tipo de mapa seleccionado
+    document.querySelectorAll(`input[name="map-type"]`).forEach(function (input) {
+        input.addEventListener('change', function () {
+            var mapType = this.value;
+            if (mapType === 'satellite') {
+                map.setStyle('mapbox://styles/mapbox/satellite-v9');
+            } else if (mapType === 'terrain') {
+                map.setStyle('mapbox://styles/mapbox/outdoors-v11');
+            }
+        });
+    });
+}
+
+
+function initMap(lineNumber) {
+    var myLatLng = { lat: -13.6175533, lng: -72.8681635 };
+
+    map = new google.maps.Map(document.getElementById(`map`), {
+        center: myLatLng,
+        zoom: 15,
+        mapTypeId: 'roadmap'
+    });
+
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'Universidad Nacional Micaela Bastidas de Apurímac'
+    });
+
+    // Escuchar cambios en el tipo de mapa seleccionado
+    document.querySelectorAll(`input[name="map-type"]`).forEach(function (input) {
+        input.addEventListener('change', function () {
+            var mapType = this.value;
+            if (mapType === 'satellite') {
+                map.setMapTypeId('satellite');
+            } else if (mapType === 'terrain') {
+                map.setMapTypeId('terrain');
+            }
+        });
+    });
+}
+
+// Abrir el mapa al cargar la página
+openMap(1);
